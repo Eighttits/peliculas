@@ -44,3 +44,11 @@ class Trailer(models.Model):
 
     def __str__(self):
         return f"{self.movie.title} - Trailer"
+
+class SavedMovie(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    saved_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('user', 'movie')
