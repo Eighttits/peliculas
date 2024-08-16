@@ -73,13 +73,12 @@ SITE_ID = 1
 REST_USE_JWT = True  # Añade esta línea para usar JWT con dj_rest_auth
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication', #borrar esta linea, solo es para la autenticacion en vista web
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
 }
 
 ACCOUNT_EMAIL_REQUIRED = False

@@ -1,27 +1,29 @@
 from django.contrib.auth.models import User
 import cloudinary.uploader
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from .serializers import UserSerializer, GenreSerializer, ActorSerializer, DirectorSerializer, MovieSerializer, TrailerSerializer, SavedMovieSerializer
 from .models import Genre, Actor, Director, Movie, Trailer, SavedMovie
 from trailers import serializers
 from rest_framework.views import APIView
+from django.views.decorators.csrf import csrf_exempt
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+class UserCreateView(generics.CreateAPIView):
     serializer_class = UserSerializer
-    
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    permission_classes = [AllowAny]
 
-    def perform_destroy(self, instance):
-        instance.delete()
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+        
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
